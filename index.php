@@ -69,46 +69,36 @@
 			      }
 */
 
-//PARTE 1
 
+
+//PARTE 1
 		/*   Se uso para solucionar que las cadenas fuesen iguales    
 		    echo "$directoresExaminar[2]<br>";
 		    echo "$directoresReales[0]<br>";
-
-
 		    //var_dump("$directoresExaminar[4]\n");
 		    // var_dump("$directoresReales[0]\n");
-
-
 		    echo strcasecmp($directoresExaminar[2],$directoresReales[0]);
-
 			if (strcasecmp($directoresExaminar[2],$directoresReales[0]) === 0){
 			echo "BBIIIIIEEENNNN";}
 		*/	
-
-
 		
-		echo "<br>1 Existen los directorios especificados en el fichero Directories.conf y no hay ningún
-		fichero más en el directorio principal que el index.php";
-
+		echo "<br><b>1 Existen los directorios especificados en el fichero Directories.conf y no hay ningún
+		fichero más en el directorio principal que el index.php</b>";
 		//Valida que existan los directorios especificados en el .conf
 		for ($i=0; $i <  count($directoresExaminar); $i++) { 	
 				//	echo "<br>$directoresExaminar[$i]<br>";
 				//echo "$directoresExaminar[$i]";
 				if(in_array("$directoresExaminar[$i]", $directoresReales)){
-
 					echo "<br>$directoresExaminar[$i] OK";
 					$analizados += 1;
 					$directoresReales = array_diff($directoresReales, array($directoresExaminar[$i]));//Los que queden seran directorios que no estan en el .conf y por tanto deberian existir
 					//unset($directoresReales['$directoresExaminar[$i]']);
 				}
 				else{
-
 					echo "<br> <font color=\"red\"> $directoresExaminar[$i] ERROR: NO EXISTE EL DIRECTORIO</font>";
 					$analizados += 1;
 					$errores += 1;
 				}
-
 				
 			/* una prueba
 				for ($j=0; $j < count($directoresReales); $j++) { 
@@ -120,9 +110,6 @@
 			*/
 		
 		}
-
-
-
 		foreach($directoresReales as $value){//se imprimen los directorios que no estan en el .conf y por tanto no pueden existir
 			echo"<br> <font color=\"red\"> $value : ERROR NO PUEDE EXISTIR EL DIRECTORIO</font>";
 			$analizados += 1;
@@ -131,7 +118,6 @@
 		
 		//valida que index.php es el unico fichero del directorio principal
 		$ficherosDirPrinci = scandir("CodigoAExaminar/");
-
 		for ($i=0; $i < count($ficherosDirPrinci); $i++) { 			
 			if(preg_match("/.+\..+/", $ficherosDirPrinci[$i]) && $ficherosDirPrinci	[$i] != "index.php") {
 				//$ficherosDirPrinci[] = "CodigoAExaminar/".$algo[$i];
@@ -142,13 +128,10 @@
 		}
 		
 		
-
 		echo "<br>$analizados Elementos analizados / Numero de errores : $errores<br>";
 		$analizados = 0;
 		$errores = 0;
 		
-
-
 //PARTE 2.1
 	
 		/*
@@ -156,55 +139,38 @@
 		//Se convierte % en una expresion regular
 		$filesExaminar2 = str_replace("%" , "[0-9A-Za-z]+" , $filesExaminar);
 		$filesExaminar2 = str_replace("." , "\." , $filesExaminar2); //Se convierte a una expr_reg cada fichero a analizar del Files.conf
-
 		$filesComprobados[] = array();
 		for ($i=0; $i < count($filesExaminar2) ; $i++) {
 			$filesExaminar2[$i] = substr (strrchr($filesExaminar2[$i] , "/"),1);//extraemos el fichero de su ruta
 			echo "<br>$filesExaminar2[$i]";
 			}
-
-
 		for($i=0; $i<count($filesExaminar2); $i++){
 			//  echo "<br>$filesExaminar[$i]";
 			$arrayEx = explode( "/" , $filesExaminar[$i]); //Separamos la ruta en un array
 			  
 			$arrayEx[count($arrayEx)-1]= null; // Eliminamos el fichero final de la ruta
-
 			$ruta =  implode ("/" , $arrayEx); //Se vuelve unir todo para obtener la ruta sin el fichero final
-
-
 			 //echo "<br> $ruta";
-
 			if(is_dir($ruta)){//Con esto nos aseguramos que trabajaremos con directorios que realmente existen
 				$ficheros =  scandir($ruta); 
-
 			//echo "<br> <b>$filesExaminar[$i]</b>";
-
 			for ($j=0; $j <  count($ficheros); $j++) { 
-
 				//$ficheros[$j] = $ruta . $ficheros[$j]; //Concatenemos para obtener la ruta completa de cada fichero que se va a analizar
-
 				// echo "<br> <b>$ficheros[$j]</b>";
 				//if(is_file($ficheros[$j])) {
 				if(preg_match("/.+\..+$/", $ficheros[$j])){
 				 	 	 
 			 	 	//echo "<br>$ficheros[$j]";
-
 				
-
 			 	$ficheros[$j] = $ruta . $ficheros[$j]; //Concatenemos para obtener la ruta completa de cada fichero que se va a analizar
-
 			 	$patron = trim("/$filesExaminar2[$i]/");
-
 			 	 	$cadena = trim($ficheros[$j]);
 			 	   // echo "<br>$patron   PATROOOON";
 				 	//echo "<br>$cadena   CADENAAA";
-
 			 	 	if(preg_match($patron, $cadena) && in_array($ruta, $filesComprobados) == false){
 			 	 	 	echo "<br> $ficheros[$j] OK";
 			 	 	 	$analizados += 1;
 			 	 	}
-
 			 	 	else {
 			 	 		if(in_array($ruta, $filesComprobados) == false){
 			 	 	 	echo "<br><font color=\"red\">$ficheros[$j] ERROR </font>";
@@ -215,39 +181,28 @@
 			 	 	}
 			 	}	
 				//}	
-
 				
 			}	
-
 			}
-
 			else{//Puede darse el caso de que no existe el directorio del fichero especificado
 				echo"<br> $filesExaminar[$i] ERROR : No existe el directorio del fichero especificado";	
 			}
-
-
 			
-
-
 		 }
-
 		 echo "<br>$analizados Elementos analizados / Numero de errores : $errores<br>";
 	     $analizados = 0;
    	   	 $errores = 0;*/
  	
-
-//PARTE 2.2 mejorable pero estoy hasta los cojones, hay que pulir los mensajes de las salidas
-
+//PARTE 2.2 mejorable, hay que pulir los mensajes de las salidas
    	   	
 	
 		
-
 		 //obviamente si se mete dos criterios distintos para los ficheros de un mismo directorio pues va
    	   	 // a duplicar y dar errores que no son pues el programa no es adivino y claro no sabe que mas 
    	   	 //adelante va haber un criterio que le indica que lo que ahora es erroneo luego es valido y pun
    	   	 // no cuadra nada
 		   	
-				echo "<br>2 Los ficheros de vista, controlador y modelo tienen el nombre indicado en especificación en el fichero Files.conf";
+				echo "<br><b>2 Los ficheros de vista, controlador y modelo tienen el nombre indicado en especificación en el fichero Files.conf</b>";
 				//Se convierte % en una expresion regular
 				$filesExaminar2 = str_replace("%" , "[0-9A-Za-z]+" , $filesExaminar);
 				$filesExaminar2 = str_replace("." , "\." , $filesExaminar2); //Se convierte a una expr_reg cada fichero a analizar del Files.conf
@@ -256,7 +211,6 @@
 					$filesExaminar2[$i] = substr (strrchr($filesExaminar2[$i] , "/"),1);//extraemos el fichero de su ruta
 					echo "<br>$filesExaminar2[$i]";
 					}
-
 				//iremos comprobando si se cumple cada critero especificado en la descripcion del .conf
 				for($i=0; $i<count($filesExaminar2); $i++){
 					//  echo "<br>$filesExaminar[$i]";
@@ -264,7 +218,6 @@
 					$arrayEx = explode( "/" , $filesExaminar[$i]); //Separamos la ruta en un array
 					  
 					$arrayEx[count($arrayEx)-1]= null; // Eliminamos el fichero final de la ruta
-
 					$ruta =  implode ("/" , $arrayEx); //Se vuelve unir todo para obtener la ruta sin el fichero final
 					 //echo "<br> $ruta";
 					if(is_dir($ruta)){//Con esto nos aseguramos que trabajaremos con directorios que realmente existen
@@ -274,18 +227,14 @@
 								echo "<br> <b>$filesExaminar[$i]</b>";
 								//vamos comprobando si los ficheros del directorio de la especificacion cumplen el criterio
 								for ($j=0; $j <  count($ficheros); $j++) { 
-
 									//$ficheros[$j] = $ruta . $ficheros[$j]; //Concatenemos para obtener la ruta completa de cada fichero que se va a analizar
 								    
 									//if(is_file($ficheros[$j])) {
 									if(preg_match("/.+\..+$/", $ficheros[$j])){
 									 	 	 
 								 	 	//echo "<br>$ficheros[$j]";
-
 								 		$ficheros[$j] = $ruta . $ficheros[$j]; //Concatenemos para obtener la ruta completa de cada fichero que se va a analizar
-
 								 		$patron = trim("/$filesExaminar2[$i]/");
-
 								 	 	$cadena = trim($ficheros[$j]);
 								 	    // echo "<br>$patron   PATROOOON";
 									 	//echo "<br>$cadena   CADENAAA";
@@ -312,7 +261,6 @@
 							if(in_array($filesExaminar[$i] , $ficheros)){
 								echo"<br>$filesExaminar[$i] OKkkkkkkkkkkkkkk";
 							 	$analizados += 1;
-
 							}
 							else{
 								echo"<br>$filesExaminar[$i] ERRORrrrrrrrrrrr";
@@ -330,11 +278,8 @@
 		   	   	 $errores = 0;
 		   	
    	   	 
-
-
 //PARTE 3 una rayada pero parece que va
-
- 			echo "<br> 3 Los ficheros del directorio CodigoAExaminar tiene todos al principio del fichero comentada su función, autor y fecha";
+ 			echo "<br> <b>3 Los ficheros del directorio CodigoAExaminar tiene todos al principio del fichero comentada su función, autor y fecha</b>";
 			
 	   	   	for ($i=0; $i < count($ficherosTodos) ; $i++) { 
 	   	   	//Iremos tratando fichero a fichero
@@ -421,17 +366,9 @@
 			     $analizados = 0;
 		   	   	 $errores = 0;
 
-
-
-
-//PARTE 4 Otra rayada que a ver si chusca
-
-
-
-
+//PARTE 4 
 
 	//PARTE 4.1  ESTO VA A QUEDAR EN EL OLVIDO
-
 			/*La idea era intentar hacer esta parte con la fucnion file para rellenar un array con todas
 			las lineas del fichero a analizar sin tener en cuenta las lineas en blanco, el proble es que
 			las lineas que estan en blanco pero tienen espacios o/y tabuladores si las guarda y eso suponia
@@ -444,17 +381,13 @@
 				$flag = false;
 				$flag2 = false;
 				while($indice >= 0 && $flag == false){
-
 					if(preg_match('/^\s*((\/){2,}|(#))+\s*$/' , $array[$indice])){// si aparecen comentario de tipo '//' o '#' pero sin nada mas, pasamos de ellos pues la funcion sigue sin estar comentada
 	
 					}
-
 					else if(preg_match('/^\s*((\/){2,}|(#))+.*$/' , $array[$indice])){//si aparece un comentario de linea con algo mas la funcion esta comentada y salimos del while para dar el OK
 						$comentario = true;
 						$flag = true;
 					}
-
-
 					else if(preg_match('/^\s*\*\/\s*$/' , $array[$indice])){//Si aparece un '/ sin nada hay que tener cuidado porque en las lineas anteriores a el puede estar comentada la funcion
 						$flag2 = true;
 					}
@@ -468,19 +401,14 @@
 					else if(!preg_match('/^\s*$/' , $array[$indice]) && $flag2==false){//si se encuentra una linea que no pertenece a un comentario quiere decir que ya hemos encontrado un tozo de codigo por lo que la funciion no esta comentada
 						$comentario=false;
 					}
-
-
 					$indice--;
-
 				}
-
-
 			//	if(preg_match('/^\s*((\/){2,}|(#)|(\*\/))+\s*$/' , $array[$indice])){
 			//		 encontrarComent($array, $indice-1);
 			}*/
 			//	else if()
-
 			//}
+
 
 			echo "<b><br>4 Las funciones y métodos en el código del directorio CodigoAExaminar tienen comentarios con una descripción antes de su comienzo</b> <br>";
 			
@@ -529,6 +457,7 @@
 				   		 	//si aparece un /**/ en distintas lineas lo da como bueno aunque no tenga cotenido en su interior
 				
 							if(count($arrayLinea) > 0){
+
 								for($j=0; $j<count($arrayFile); $j++){//ahora recorremos el array que contiene el fichero buscando funciones
 							
 								//Parte de la primera expresion regular se ha sacado del manual de php
@@ -548,10 +477,12 @@
 								   	 	$contFunciones++;
 								   	}	
 								}
+
 									if($sinError == true){
 										echo"$ficherosTodos[$i] OK<br>";
 										$analizados += 1;
 									}
+
 									else{					
 										echo"$ficherosTodos[$i] ERROR<br>";
 										for($k=0; $k<count($lineaError); $k++){
@@ -561,6 +492,7 @@
 										$errores += 1;								
 									}
 							}
+
 							else{
 								echo"$ficherosTodos[$i] El archivo no tiene funciones <br>";
 				   	   	 		$analizados += 1;
@@ -580,11 +512,9 @@
 			     $analizados = 0;
 		   	   	 $errores = 0;
 
+
 //LA SALIDA TIENEN QUE MOSTRAR LAS FUNCIONES QUE SE HAN ANAILIZADO NO LOS FICHEROS ANALIZADOS
-
-
 //PARTE 5  
-
 /*
 En esta parte iremos recorriendo cada fichero a analizar y guardandolo en un array sin aquellas lineas que esten vacias
 o que tengan comentarios redundantes(no aporten informacion), mientras hacemos esto aprovecharemos para ir obteniendo 
@@ -592,13 +522,10 @@ el nombre de cada nueva variable que aparece y guardarla en un array multidimens
 aparece en el fichero original(para luego imprimirla en caso de error) y junto a la posicion del array en la que se 
 guarda la linea en la que aparece por primera vez dicha variable(para luego solamente consultar las posinones del 
 array que contienen variables que aparecen por primera vez)
-
 La idea es que si una variable aparece por primera vez ella sola en una linea y esta comentada en la misma linea o 
 antes, dicha variable estara correcta, pero si no se cumple esto o directamente esta dentro de una estructura de 
 control o funcion por primera vez sin haber sido inicializada antes, dara un error
 */
-
-
 			echo "<b><br>5 En el codigo están todas las variables definidas antes de su uso y tienen un comentario antes o en la misma linea</b> <br>";
 			
 	   	   	for ($i=0; $i < count($ficherosTodos) ; $i++) { 
@@ -611,17 +538,11 @@ control o funcion por primera vez sin haber sido inicializada antes, dara un err
 			  	$arrayMulti = array();//Primera columna: Nombre de la variable   Segunda col: Linea de su primera apericion en el fichero   Tercera col: Posicion del array arrayFile en la que se guarda
 	   	   	 	$arrayNomVar = array();//Se usa para llevar el control de las variables que ya han aparecido en el fichero
 	   	   	 	$arrayMultiVarError = array();//Primera columna: Nombre de la variable no comentada Segunda: linea de la variable en el fichero original
-
 	   	   	 	if(!preg_match("/.+\.(png|pdf|jpg|gif)$/" , $ficherosTodos[$i])){//para todos los ficheros que no son propietarios
-
 	   	   	 		if (!$fConf = fopen($ficherosTodos[$i], "r")){
-
 			   		 echo "No se ha podido abrir el archivo<br>";
 					}//en if que cumprueba si el fichero se ha podido abrir
-
 			  	    else{
-
-
 			  	    	if(filesize($ficherosTodos[$i]) <= 0){
 							echo "$ficherosTodos[$i]  <font color=\"red\"> ERROR : El archivo esta vacio</font><br>";
 	
@@ -637,10 +558,8 @@ control o funcion por primera vez sin haber sido inicializada antes, dara un err
 				   				$numeroLinea++;  
 					   	 		if(!preg_match('/^\s*(((((\/){2,}|#)*\s*)*)[^A-Za-z]*)*$/',$line) || preg_match('/^\s*(\/\*)|(\*\/)\s*$/',$line)) { 
 					   	 			$arrayFile[] = $line;
-
 					   	 		//	echo"$line<br>";
 					   	 		}
-
 					   	 		if(preg_match('/\$[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*/' , $line)){
 					   	 			 //Si aparece una variable guardamos su numero de linea en el array
 					   	 			$arrayString = array();//Si la linea tienen variable la recorremos como si fuese un array y vamos almacenando las posiciones desde el primer dolar hasta el final de la variable en un array que luego pasaremos a string y asi sacamos los nombres de las variables
@@ -662,11 +581,9 @@ control o funcion por primera vez sin haber sido inicializada antes, dara un err
 					   	 						$arrayMulti[$s][2] = count($arrayFile)-1;
 					   	 						$s++;
 					   	 					}
-
 					   	 					$arrayString = array();
 					   	 					
 					   	 				}
-
 					   	 				if(preg_match('/\$/' ,$line[$x]) && preg_match('/[a-zA-Z_\x7f-\xff]/' ,$line[$x+1]) && $flagVariable == false){//Si aparece el comienzo de una variable empezamos a guardar el nombre se dicha variable
 					   	 					$arrayString[] = $line[$x];
 					   	 					$x++;
@@ -674,18 +591,14 @@ control o funcion por primera vez sin haber sido inicializada antes, dara un err
 					   	 					$flagVariable = true;
 					   	 				}
 					   	 			}
-
 					   	 		}			   	 		
 					   	 				
 						    }//end while que recorre el fichero linea a linea	 
-
-
 				   		 	//si aparece un /**/ en distintas lineas lo da como bueno aunque no tenga cotenido en su interior				
 							if(count($arrayMulti) > 0){//Si su tamaño es > 0 entonces podremos afirmar que el archivo tiene almenos una variable
 								$indice = 0;
 								for($j=0; $j<count($arrayMulti); $j++){//solo accederemos a las posiciones de arrayFile que tengan variables que aparecen por primera vez en el fichero
 							
-
 									//Si la variable que aparece por primera vez cumple el criterio no se hace nada
 									if(preg_match('/^\s*(var\s+)?\$[a-zA-Z_][a-zA-Z0-9_]*\s*(=\s*.*)?;?((\/){2,}|#+|(\/\*))(.*([A-Za-z]+\s*)+.*)*+$/' , $arrayFile[$arrayMulti[$j][2]]) || (preg_match('/^\s*(var\s+)?\$[a-zA-Z_][a-zA-Z0-9_]*\s*(=\s*.*)?;?$/' , $arrayFile[$arrayMulti[$j][2]]) && (
 										preg_match('/^\s*((\/\/)|#|(\/\*))/',$arrayFile[$arrayMulti[$j][2]-1])  ||
@@ -703,49 +616,228 @@ control o funcion por primera vez sin haber sido inicializada antes, dara un err
 									}
 				
 								}
-
-
 									if($sinError == true){//En caso de que todas las variables esten comentadas en su primer uso damos el OK
 										echo"$ficherosTodos[$i]  OK<br>";
 										$analizados += 1;
 									}
-
 									else{//en caso contrario indicamos que variables no estan comentadas en su primer uso y su linea					
 										echo"$ficherosTodos[$i] ERROR<br>";
-
 										for($k=0; $k<count($arrayMultiVarError); $k++){
 											echo $arrayMultiVarError[$k][0]." sin comentarios de descripcion en la linea ".$arrayMultiVarError[$k][1]."<br>";	
 										}		
 							
 									}
 							}
-
 							else{
 								echo"$ficherosTodos[$i] El archivo no tiene variables <br>";
 				   	   	 		
 							}					
-
 							fclose($fConf);
 				   	   	}
 				   	   	 	
-
 					}
-
 				}//end else grande
-
 				else{//ESTO SE PUEDE QUITAR Y DEJARLO SOLO EN LA PARTE 3 PUES REPETIRIA EL ERROR
 			   	   	 		echo"$ficherosTodos[$i]  <font color=\"red\"> ERROR: NO ES PROPIETARIO </font><br>";
-
 			   	   	}				   	   				
 	   	   	} //end for que recorre cada posicion del array ficherosTodos para ir comprobando si cada archivo tienen el comentario de cabecera
-
-
 	   	   	 	 echo "<br>$analizados Variables analizadas / Numero de errores : $errores<br>";
 			     $analizados = 0;
 		   	   	 $errores = 0;
 
 
 //PARTE 6
+
+	echo "<b><br>6 En el codigo están comentadas todas las estructuras de control antes de uso o en la misma linea</b> <br>";
+			
+	   	  	for ($i=0; $i < count($ficherosTodos) ; $i++) { 
+	   	   		//Iremos tratando fichero a fichero
+	   	   		
+	   	 
+				$sinError = true; //Se pondra a false si aparece una estructura que no esta comentada
+				$numeroLinea = 0; //Para saber en que linea estamos del fichero
+			  	$arrayFile = array(); //Array en el que guardaremos cada linea que nos interese del archivo
+	   	   	 	$arrayEstructuras = array();//Primera columna: Nombre de la estructura   Segunda col: Linea en la que se encuentra en el fichero   Tercera col: Posicion del array arrayFile en la que se guarda
+	   	   	 	$arrayEstructurasError = array();//Array en el que se guardaran los datos de aquellas estructuras que no esten comentadas
+
+
+	   	   	 	if(!preg_match("/.+\.(png|pdf|jpg|gif)$/" , $ficherosTodos[$i])){//para todos los ficheros que no son propietarios
+	   	   	 		if (!$fConf = fopen($ficherosTodos[$i], "r")){
+			   		 echo "No se ha podido abrir el archivo<br>";
+					}//en if que cumprueba si el fichero se ha podido abrir
+			  	    else{
+			  	    	if(filesize($ficherosTodos[$i]) <= 0){
+							echo "$ficherosTodos[$i]  <font color=\"red\"> ERROR : El archivo esta vacio</font><br>";
+	
+						} 
+			  	    	
+			  	    	else{
+			  	    		$s=0;
+			  	    		$arrayEstructuras = array();
+						   	while (($line = fgets($fConf)) !== false) {		
+				   				//Nos aseguramos que solo guardamos la lineas que nos interesan, es decir, se omiten
+				   				// aquellas en blanco, que puedan contener espacios y tabuladores y ademas las lineas
+				   				//que estan comentadas pero no aportarian informacion es decir que no tienen texto
+				   				//despues del comentario
+				   				$numeroLinea++;  
+					   	 		if(!preg_match('/^\s*(((((\/){2,}|#)*\s*)*)[^A-Za-z]*)*$/',$line) || preg_match('/^\s*(\/\*)|(\*\/)\s*$/',$line)) { 
+					   	 			$arrayFile[] = $line;
+					   	 		//	echo"$line<br>";
+					   	 		}
+
+					   	 		//Se ira comprobando cada posible estructura de control y en caso que aparezca alguna guardaremos
+					   	 		//su nombre, numero de linea en el fichero y la posicion en la que se guarda en el array
+					   	 		if(preg_match('/if\s*\(.*\)/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "IF";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}
+					   	 		else if(preg_match('/\s*else/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "ELSE";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}
+					   	 		else if(preg_match('/else\s*if\s*\(.*\)/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "ELSEIF";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}	
+					   	 		else if(preg_match('/\s*while\s*\(.*\)\s*((\{)|(:))/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "WHILE";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}
+					   	 		else if(preg_match('/\s*do\s*\{/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "DO";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}
+					   	 		else if(preg_match('/\s*for\s*\((.*;.*;.*)\)\s*/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "FOR";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}	
+					   	 		else if(preg_match('/\s*foreach\s*\((.*;.*;.*)\)/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "FOREACH";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+
+					   	 		}		
+					   	 		else if(preg_match('/\s*continue[^\w]/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "CONTINUE";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}			   	 		
+					   	 		else if(preg_match('/\s*switch\s*\((.*)\)/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "SWITCH";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}
+					   	 		else if(preg_match('/\s*declare[^\w]/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "DECLARE";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}							   	
+					   	 		else if(preg_match('/\s*require[^\w]/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "REQUIRE";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}		   	 		
+					   	 		else if(preg_match('/\s*include[^\w]/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "INCLUDE";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 	
+					   	 			$s++;
+					   	 		}						   	 
+					   	 		else if(preg_match('/\s*goto[^\w]/' , $line)){
+					   	 			$arrayEstructuras[$s][0] = "GOTO";
+					   	 			$arrayEstructuras[$s][1] = $numeroLinea; 
+					   	 			$arrayEstructuras[$s][2] = count($arrayFile)-1; 
+					   	 			$s++;
+					   	 		}				
+
+
+						    }//end while que recorre el fichero linea a linea	 
+				   		 	//si aparece un /**/ en distintas lineas lo da como bueno aunque no tenga cotenido en su interior				
+
+							if(count($arrayEstructuras) > 0){//Si su tamaño es > 0 entonces podremos afirmar que el archivo tiene almenos una variable
+								$indice = 0;
+								for($j=0; $j<count($arrayEstructuras); $j++){//solo accederemos a las posiciones de arrayFile que tengan variables que aparecen por primera vez en el fichero
+							
+									//Si la estrucutra de control esta comentada antes o en su propia linea no se hace nada
+									if(preg_match('/(if|else|else\s*if|while|do|for|foreach|continue|switch|declare|require|include|goto).*((\/){2,}|#+|(\/\*))(.*([A-Za-z]+\s*)+.*)*+$/' , $arrayFile[$arrayEstructuras[$j][2]]) || (preg_match('/(if|else|else\s*if|while|do|for|foreach|continue|switch|declare|require|include|goto)/' , $arrayFile[$arrayEstructuras[$j][2]]) && (
+										preg_match('/^\s*((\/\/)|#|(\/\*))/',$arrayFile[$arrayEstructuras[$j][2]-1])  ||
+											preg_match('/^\s*\*\/\s*$/',$arrayFile[$arrayEstructuras[$j][2]-1]) ) ) ) {
+												$analizados += 1;
+								
+									}
+
+									else{//si no se almacena para luego imprimir el error
+										$sinError = false;
+										$arrayEstructurasError[$indice][0] = $arrayEstructuras[$j][0];
+										$arrayEstructurasError[$indice][1] = $arrayEstructuras[$j][1];
+										$indice ++;
+										$analizados += 1;
+										$errores += 1;	
+									}
+				
+								}
+
+									if($sinError == true){//En caso de que todas las estructuras de control
+										echo"$ficherosTodos[$i]  OK<br>";
+										$analizados += 1;
+									}
+
+									else{//en caso contrario indicamos que estructuras de control no estan comentadas				
+										echo"$ficherosTodos[$i] ERROR<br>";
+										for($k=0; $k<count($arrayEstructurasError); $k++){
+											echo "<font color=\"red\">".$arrayEstructurasError[$k][0]." sin comentarios de descripcion en la linea ".$arrayEstructurasError[$k][1]."</font><br>";	
+										}		
+							
+									}
+							}
+
+							else{
+								echo"$ficherosTodos[$i] El archivo no tiene estructuras de control <br>";
+				   	   	 		
+							}					
+							fclose($fConf);
+				   	   	}
+				   	   	 	
+					}
+				}//end else grande
+
+				else{//ESTO SE PUEDE QUITAR Y DEJARLO SOLO EN LA PARTE 3 PUES REPETIRIA EL ERROR
+			   	   	 		echo"$ficherosTodos[$i]  <font color=\"red\"> ERROR: NO ES PROPIETARIO </font><br>";
+			   	   	}		
+
+	   	   	} //end for que recorre cada posicion del array ficherosTodos para ir comprobando si cada archivo tienen el comentario de cabecera
+	   	   	 	 echo "<br>$analizados Estructuras de control analizadas / Numero de errores : $errores<br>";
+			     $analizados = 0;
+		   	   	 $errores = 0;
+
+
+
+
+
+/*NOTAS
+
+-Si el comentario contiene una letra ya se da por bueno, esto se puede modificar para que tenga que tener mas letras
+
+
+*/
+
 
 
 //	FUNCIONES
